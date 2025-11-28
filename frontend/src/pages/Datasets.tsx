@@ -1,14 +1,11 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useDatasetStore } from '../store/datasetStore';
-import { categoryApi } from '../api/categories';
 import { Search, Filter, Download, Eye } from 'lucide-react';
 import CategoryTree from '../components/CategoryTree';
-import type { Category } from '../types';
 
 export default function Datasets() {
   const { datasets, isLoading, fetchDatasets } = useDatasetStore();
-  const [categories, setCategories] = useState<Category[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [selectedCategoryName, setSelectedCategoryName] = useState<string>('全部分类');
@@ -20,8 +17,6 @@ export default function Datasets() {
 
   const loadData = async () => {
     await fetchDatasets();
-    const cats = await categoryApi.getCategories();
-    setCategories(cats);
   };
 
   const handleSearch = () => {

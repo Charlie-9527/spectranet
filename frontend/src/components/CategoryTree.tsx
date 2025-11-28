@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { ChevronRight, ChevronDown, Folder, FolderOpen } from 'lucide-react';
-import { categoryApi } from '../api/categories';
 
 interface CategoryNode {
   id: number;

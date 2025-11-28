@@ -14,7 +14,6 @@ export default function DatasetDetail() {
   const { isAuthenticated } = useAuthStore();
   const [samples, setSamples] = useState<SpectralSample[]>([]);
   const [selectedSample, setSelectedSample] = useState<SpectralSample | null>(null);
-  const [loadingSamples, setLoadingSamples] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -25,7 +24,6 @@ export default function DatasetDetail() {
 
   const loadSamples = async () => {
     if (!id) return;
-    setLoadingSamples(true);
     try {
       const data = await datasetApi.getSamples(Number(id), 0, 10);
       setSamples(data);
@@ -34,8 +32,6 @@ export default function DatasetDetail() {
       }
     } catch (error) {
       console.error('Failed to load samples:', error);
-    } finally {
-      setLoadingSamples(false);
     }
   };
 
