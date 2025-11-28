@@ -1,0 +1,15 @@
+[Unit]
+Description=SpectraNet FastAPI Backend
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+WorkingDirectory=/var/www/spectranet/backend
+Environment="PATH=/var/www/spectranet/backend/venv/bin"
+ExecStart=/var/www/spectranet/backend/venv/bin/python main.py
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

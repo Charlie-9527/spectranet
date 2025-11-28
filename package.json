@@ -1,0 +1,14 @@
+{
+  "name": "spectranet",
+  "version": "1.0.0",
+  "description": "Spectral Dataset Repository - Inspired by ImageNet",
+  "scripts": {
+    "setup": "cd backend && python -m venv venv && pip install -r requirements.txt && python init_db.py && cd ../frontend && npm install",
+    "dev:backend": "cd backend && python main.py",
+    "dev:frontend": "cd frontend && npm run dev",
+    "build:frontend": "cd frontend && npm run build"
+  },
+  "keywords": ["spectral", "dataset", "repository", "imagenet"],
+  "author": "SpectraNet Team",
+  "license": "MIT"
+}
