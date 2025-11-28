@@ -1,0 +1,35 @@
+services:
+  # Backend API Service
+  - type: web
+    name: spectranet-backend
+    runtime: python
+    region: oregon
+    plan: free
+    branch: main
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ALGORITHM
+        value: HS256
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: 43200
+      - key: ALLOWED_ORIGINS
+        value: http://localhost:5173,https://spectranet.vercel.app,https://www.spectranet.com.cn
+      - key: UPLOAD_DIR
+        value: /opt/render/project/src/uploads
+      - key: MAX_UPLOAD_SIZE
+        value: 104857600
+      - key: HOST
+        value: 0.0.0.0
+
+databases:
+  # PostgreSQL Database
+  - name: spectranet-db
+    plan: free
+    databaseName: spectranet
+    user: spectranet
