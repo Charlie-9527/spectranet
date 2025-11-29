@@ -98,19 +98,27 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
             <div>
-              <div className="text-4xl font-bold text-primary-600">1000+</div>
-              <div className="text-gray-600 mt-2">数据集</div>
+              <div className="text-4xl font-bold text-primary-600">
+                100<sup>+</sup>
+              </div>
+              <div className="text-gray-600 mt-2">样本种类</div>
             </div>
             <div>
-              <div className="text-4xl font-bold text-primary-600">50K+</div>
-              <div className="text-gray-600 mt-2">光谱样本</div>
+              <div className="text-4xl font-bold text-primary-600">
+                100K<sup>+</sup>
+              </div>
+              <div className="text-gray-600 mt-2">光谱数量</div>
             </div>
             <div>
-              <div className="text-4xl font-bold text-primary-600">500+</div>
+              <div className="text-4xl font-bold text-primary-600">
+                100<sup>+</sup>
+              </div>
               <div className="text-gray-600 mt-2">贡献者</div>
             </div>
             <div>
-              <div className="text-4xl font-bold text-primary-600">10K+</div>
+              <div className="text-4xl font-bold text-primary-600">
+                10K<sup>+</sup>
+              </div>
               <div className="text-gray-600 mt-2">下载量</div>
             </div>
           </div>
