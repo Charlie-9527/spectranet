@@ -27,7 +27,6 @@ def init_superuser(db: Session = Depends(get_db)):
     初始化超级管理员账号 - 仅用于生产环境首次部署
     创建后请立即删除此接口或注释掉
     """
-    import bcrypt
     try:
         # 先删除已存在的 admin 用户(如果有)
         existing_admin = db.query(User).filter(User.username == "admin").first()
@@ -35,12 +34,9 @@ def init_superuser(db: Session = Depends(get_db)):
             db.delete(existing_admin)
             db.commit()
         
-        # 使用 bcrypt 直接生成密码哈希
+        # 使用标准 get_password_hash 生成密码哈希
         # 密码: admin123
-        password = b"admin123"
-        salt = bcrypt.gensalt(rounds=12)
-        hashed = bcrypt.hashpw(password, salt)
-        hashed_password = hashed.decode('utf-8')
+        hashed_password = get_password_hash("admin123")
         
         # 直接创建超级管理员
         db_user = User(
