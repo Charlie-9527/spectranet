@@ -19,7 +19,7 @@ services:
       - key: ACCESS_TOKEN_EXPIRE_MINUTES
         value: 43200
       - key: ALLOWED_ORIGINS
-        value: http://localhost:5173,https://spectranet.vercel.app,https://www.spectranet.com.cn
+        value: http://localhost:5173,https://spectranet.vercel.app,https://spectranet-qoderpj.vercel.app,https://www.spectranet.com.cn
       - key: UPLOAD_DIR
         value: /opt/render/project/src/uploads
       - key: MAX_UPLOAD_SIZE

@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useDatasetStore } from '../store/datasetStore';
 import { useAuthStore } from '../store/authStore';
 import { datasetApi } from '../api/datasets';
-import { Download, Eye, Calendar, User, Tag } from 'lucide-react';
+import { Download, Eye, Calendar, User, Tag, Trash2 } from 'lucide-react';
 import SpectralChart from '../components/SpectralChart';
 import type { SpectralSample } from '../types';
 
@@ -11,7 +11,7 @@ export default function DatasetDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { currentDataset, isLoading, fetchDataset } = useDatasetStore();
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated, user } = useAuthStore();
   const [samples, setSamples] = useState<SpectralSample[]>([]);
   const [selectedSample, setSelectedSample] = useState<SpectralSample | null>(null);
 
@@ -84,6 +84,43 @@ export default function DatasetDetail() {
     }
   };
 
+  const handleDelete = async () => {
+    if (!id || !currentDataset) return;
+
+    if (!confirm(`确定要删除数据集 "${currentDataset.name}" 吗？此操作不可恢复！`)) {
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('access_token');
+      const response = await fetch(`http://localhost:8000/api/datasets/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          alert('登录已过期，请重新登录');
+          navigate('/login');
+          return;
+        }
+        if (response.status === 403) {
+          alert('您没有权限删除此数据集');
+          return;
+        }
+        throw new Error('删除失败');
+      }
+
+      alert(`数据集 "${currentDataset.name}" 已成功删除`);
+      navigate('/datasets');
+    } catch (error) {
+      console.error('Delete failed:', error);
+      alert('删除失败，请稍后重试');
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -134,10 +171,21 @@ export default function DatasetDetail() {
                 )}
               </div>
             </div>
-            <button onClick={handleDownload} className="btn-primary flex items-center space-x-2">
-              <Download className="h-5 w-5" />
-              <span>Download</span>
-            </button>
+            <div className="flex items-center space-x-3">
+              <button onClick={handleDownload} className="btn-primary flex items-center space-x-2">
+                <Download className="h-5 w-5" />
+                <span>Download</span>
+              </button>
+              {user?.is_superuser && (
+                <button 
+                  onClick={handleDelete} 
+                  className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors"
+                >
+                  <Trash2 className="h-5 w-5" />
+                  <span>Delete</span>
+                </button>
+              )}
+            </div>
           </div>
 
           <p className="text-gray-700 mb-4">{currentDataset.description}</p>

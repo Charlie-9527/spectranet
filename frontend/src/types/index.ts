@@ -6,6 +6,7 @@ export interface User {
   institution?: string;
   is_active: boolean;
   is_superuser: boolean;
+  is_admin: boolean;
   created_at: string;
 }
 

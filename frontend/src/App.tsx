@@ -10,6 +10,7 @@ import Datasets from './pages/Datasets';
 import DatasetDetail from './pages/DatasetDetail';
 import Upload from './pages/Upload';
 import Statistics from './pages/Statistics';
+import AdminUsers from './pages/AdminUsers';
 
 function App() {
   const { loadUser } = useAuthStore();
@@ -31,6 +32,7 @@ function App() {
             <Route path="/datasets/:id" element={<DatasetDetail />} />
             <Route path="/upload" element={<Upload />} />
             <Route path="/statistics" element={<Statistics />} />
+            <Route path="/admin/users" element={<AdminUsers />} />
           </Routes>
         </main>
         <Footer />

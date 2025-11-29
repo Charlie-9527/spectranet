@@ -32,7 +32,7 @@ export default function Home() {
                   浏览数据集
                 </Link>
                 <Link
-                  to={isAuthenticated ? "/upload" : "/register"}
+                  to={isAuthenticated ? "/upload" : "/login"}
                   className="bg-primary-500 text-white px-8 py-3 rounded-lg font-semibold hover:bg-primary-400 transition-colors border-2 border-white"
                 >
                   研究应用
@@ -211,10 +211,10 @@ export default function Home() {
             加入数千名研究人员，使用 SPECTRANET 满足您的光谱数据需求
           </p>
           <Link
-            to={isAuthenticated ? "/upload" : "/register"}
+            to={isAuthenticated ? "/upload" : "/login"}
             className="bg-white text-primary-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors inline-block"
           >
-            {isAuthenticated ? "上传数据集" : "创建免费账户"}
+            {isAuthenticated ? "上传数据集" : "登录账户"}
           </Link>
         </div>
       </div>

@@ -1,4 +1,5 @@
 from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr, Field
 from typing import Optional, List, Dict, Any
 from datetime import datetime
 
@@ -13,6 +14,7 @@ class UserBase(BaseModel):
 
 class UserCreate(UserBase):
     password: str = Field(..., min_length=6)
+    is_admin: bool = False
 
 
 class UserUpdate(BaseModel):
@@ -25,6 +27,7 @@ class UserResponse(UserBase):
     id: int
     is_active: bool
     is_superuser: bool
+    is_admin: bool
     created_at: datetime
     
     class Config:

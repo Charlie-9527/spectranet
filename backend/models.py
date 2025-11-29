@@ -15,6 +15,7 @@ class User(Base):
     institution = Column(String(200))
     is_active = Column(Boolean, default=True)
     is_superuser = Column(Boolean, default=False)
+    is_admin = Column(Boolean, default=False)  # 管理员权限:可上传下载
     created_at = Column(DateTime, default=datetime.utcnow)
     
     datasets = relationship("Dataset", back_populates="owner")

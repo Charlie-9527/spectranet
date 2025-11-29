@@ -44,6 +44,15 @@ export default function Navbar() {
                   <span>上传</span>
                 </Link>
               )}
+              {isAuthenticated && user?.is_superuser && (
+                <Link
+                  to="/admin/users"
+                  className="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium flex items-center space-x-1"
+                >
+                  <User className="h-4 w-4" />
+                  <span>用户管理</span>
+                </Link>
+              )}
             </div>
           </div>
 
@@ -73,12 +82,13 @@ export default function Navbar() {
                 >
                   登录
                 </Link>
-                <Link
+                {/* 公开注册已关闭 */}
+                {/* <Link
                   to="/register"
                   className="bg-primary-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-primary-700"
                 >
                   注册
-                </Link>
+                </Link> */}
               </>
             )}
           </div>

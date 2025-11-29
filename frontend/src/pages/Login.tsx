@@ -81,10 +81,7 @@ export default function Login() {
             <div className="relative">
               <div className="relative flex justify-center text-sm">
                 <span className="px-2 bg-white text-gray-500">
-                  Don't have an account?{' '}
-                  <Link to="/register" className="text-primary-600 hover:text-primary-700">
-                    Register
-                  </Link>
+                  需要账号？请联系管理员获取访问权限
                 </span>
               </div>
             </div>
