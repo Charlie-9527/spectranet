@@ -35,31 +35,30 @@ def init_superuser(db: Session = Depends(get_db)):
             detail="数据库已有用户，无法使用初始化接口。请联系现有管理员。"
         )
     
-    # 创建默认超级管理员
-    default_admin = UserCreate(
+    # 直接创建超级管理员（不使用 UserCreate schema）
+    hashed_password = get_password_hash("admin123456")  # 临时密码
+    db_user = User(
         username="admin",
         email="admin@spectranet.com",
-        password="admin123456",  # 临时密码，请立即修改
+        hashed_password=hashed_password,
         full_name="系统管理员",
         institution="LASDOP Lab - HFUT",
-        is_admin=True
-    )
-    
-    hashed_password = get_password_hash(default_admin.password)
-    db_user = User(
-        username=default_admin.username,
-        email=default_admin.email,
-        hashed_password=hashed_password,
-        full_name=default_admin.full_name,
-        institution=default_admin.institution,
         is_admin=True,
-        is_superuser=True,  # 设置为超级管理员
+        is_superuser=True,
         is_active=True
     )
-    db.add(db_user)
-    db.commit()
-    db.refresh(db_user)
-    return db_user
+    
+    try:
+        db.add(db_user)
+        db.commit()
+        db.refresh(db_user)
+        return db_user
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"创建失败: {str(e)}"
+        )
 
 
 @router.post("/admin/create-user", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
