@@ -15,8 +15,19 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/auth/login")
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    import bcrypt
-    return bcrypt.checkpw(plain_password.encode('utf-8'), hashed_password.encode('utf-8'))
+    # 先尝试 passlib (兼容旧密码)
+    try:
+        if pwd_context.verify(plain_password, hashed_password):
+            return True
+    except Exception:
+        pass
+    
+    # 再尝试 native bcrypt (新密码)
+    try:
+        import bcrypt
+        return bcrypt.checkpw(plain_password.encode('utf-8'), hashed_password.encode('utf-8'))
+    except Exception:
+        return False
 
 
 def get_password_hash(password: str) -> str:
