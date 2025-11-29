@@ -21,6 +21,47 @@ def register(user_data: UserCreate, db: Session = Depends(get_db)):
     )
 
 
+@router.post("/init-superuser", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
+def init_superuser(db: Session = Depends(get_db)):
+    """
+    初始化超级管理员账号 - 仅用于生产环境首次部署
+    创建后请立即删除此接口或注释掉
+    """
+    # 检查是否已有用户，如果有则拒绝创建
+    user_count = db.query(User).count()
+    if user_count > 0:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="数据库已有用户，无法使用初始化接口。请联系现有管理员。"
+        )
+    
+    # 创建默认超级管理员
+    default_admin = UserCreate(
+        username="admin",
+        email="admin@spectranet.com",
+        password="admin123456",  # 临时密码，请立即修改
+        full_name="系统管理员",
+        institution="LASDOP Lab - HFUT",
+        is_admin=True
+    )
+    
+    hashed_password = get_password_hash(default_admin.password)
+    db_user = User(
+        username=default_admin.username,
+        email=default_admin.email,
+        hashed_password=hashed_password,
+        full_name=default_admin.full_name,
+        institution=default_admin.institution,
+        is_admin=True,
+        is_superuser=True,  # 设置为超级管理员
+        is_active=True
+    )
+    db.add(db_user)
+    db.commit()
+    db.refresh(db_user)
+    return db_user
+
+
 @router.post("/admin/create-user", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
 def admin_create_user(
     user_data: UserCreate,
