@@ -25,8 +25,10 @@ def register(user_data: UserCreate, db: Session = Depends(get_db)):
 def init_superuser(db: Session = Depends(get_db)):
     """
     初始化超级管理员账号 - 仅用于生产环境首次部署
-    创建后请立即删除此接口或注释掉
+    创建后请立即删除此接口或注释悉
     """
+    import bcrypt
+    
     try:
         # 检查是否已有用户，如果有则拒绝创建
         user_count = db.query(User).count()
@@ -36,9 +38,10 @@ def init_superuser(db: Session = Depends(get_db)):
                 detail="数据库已有用户，无法使用初始化接口。请联系现有管理员。"
             )
         
-        # 使用更短的密码避免 bcrypt 限制
-        simple_password = "admin123"  # 临时密码，8个字符
-        hashed_password = get_password_hash(simple_password)
+        # 直接使用 bcrypt 库而不是 passlib
+        simple_password = b"admin123"
+        salt = bcrypt.gensalt()
+        hashed_password = bcrypt.hashpw(simple_password, salt).decode('utf-8')
         
         # 直接创建超级管理员
         db_user = User(
