@@ -27,37 +27,44 @@ def init_superuser(db: Session = Depends(get_db)):
     初始化超级管理员账号 - 仅用于生产环境首次部署
     创建后请立即删除此接口或注释掉
     """
-    # 检查是否已有用户，如果有则拒绝创建
-    user_count = db.query(User).count()
-    if user_count > 0:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="数据库已有用户，无法使用初始化接口。请联系现有管理员。"
-        )
-    
-    # 直接创建超级管理员（不使用 UserCreate schema）
-    hashed_password = get_password_hash("admin123456")  # 临时密码
-    db_user = User(
-        username="admin",
-        email="admin@spectranet.com",
-        hashed_password=hashed_password,
-        full_name="系统管理员",
-        institution="LASDOP Lab - HFUT",
-        is_admin=True,
-        is_superuser=True,
-        is_active=True
-    )
-    
     try:
+        # 检查是否已有用户，如果有则拒绝创建
+        user_count = db.query(User).count()
+        if user_count > 0:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="数据库已有用户，无法使用初始化接口。请联系现有管理员。"
+            )
+        
+        # 使用更短的密码避免 bcrypt 限制
+        simple_password = "admin123"  # 临时密码，8个字符
+        hashed_password = get_password_hash(simple_password)
+        
+        # 直接创建超级管理员
+        db_user = User(
+            username="admin",
+            email="admin@spectranet.com",
+            hashed_password=hashed_password,
+            full_name="系统管理员",
+            institution="LASDOP Lab - HFUT",
+            is_admin=True,
+            is_superuser=True,
+            is_active=True
+        )
+        
         db.add(db_user)
         db.commit()
         db.refresh(db_user)
         return db_user
+        
+    except HTTPException:
+        raise
     except Exception as e:
         db.rollback()
+        # 返回详细错误信息用于调试
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"创建失败: {str(e)}"
+            detail=f"创建失败: {type(e).__name__}: {str(e)}"
         )
 
 
