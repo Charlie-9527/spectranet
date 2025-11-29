@@ -6,8 +6,7 @@ export default function Footer() {
           <div>
             <h3 className="text-lg font-semibold mb-4">SPECTRANET</h3>
             <p className="text-gray-400 text-sm">
-              用于研究和应用的综合光谱数据集存储库。
-              受 ImageNet 启发，专为光谱数据构建。
+              本数据集网站由合肥工业大学 LASDOP 课题组负责运营及技术维护
             </p>
           </div>
           
