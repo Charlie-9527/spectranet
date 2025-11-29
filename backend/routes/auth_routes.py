@@ -25,23 +25,18 @@ def register(user_data: UserCreate, db: Session = Depends(get_db)):
 def init_superuser(db: Session = Depends(get_db)):
     """
     初始化超级管理员账号 - 仅用于生产环境首次部署
-    创建后请立即删除此接口或注释悉
+    创建后请立即删除此接口或注释掉
     """
-    import bcrypt
-    
     try:
-        # 检查是否已有用户，如果有则拒绝创建
-        user_count = db.query(User).count()
-        if user_count > 0:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="数据库已有用户，无法使用初始化接口。请联系现有管理员。"
-            )
+        # 先删除已存在的 admin 用户（如果有）
+        existing_admin = db.query(User).filter(User.username == "admin").first()
+        if existing_admin:
+            db.delete(existing_admin)
+            db.commit()
         
-        # 直接使用 bcrypt 库而不是 passlib
-        simple_password = b"admin123"
-        salt = bcrypt.gensalt()
-        hashed_password = bcrypt.hashpw(simple_password, salt).decode('utf-8')
+        # 使用简单密码
+        simple_password = "admin123"
+        hashed_password = get_password_hash(simple_password)
         
         # 直接创建超级管理员
         db_user = User(
