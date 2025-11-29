@@ -31,7 +31,7 @@ export default function Footer() {
         </div>
         
         <div className="border-t border-gray-700 mt-8 pt-8 text-center text-sm text-gray-400">
-          <p>&copy; 2025 SPECTRANET. 保留所有权利。</p>
+          <p>&copy; 2025 合肥纳立讯智能科技有限公司 版权所有。保留所有权利。</p>
         </div>
       </div>
     </footer>
