@@ -100,7 +100,8 @@ def admin_create_user(
         hashed_password=hashed_password,
         full_name=user_data.full_name,
         institution=user_data.institution,
-        is_admin=user_data.is_admin
+        is_admin=user_data.is_admin,
+        is_superuser=user_data.is_superuser
     )
     db.add(db_user)
     db.commit()

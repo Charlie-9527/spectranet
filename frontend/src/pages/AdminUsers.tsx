@@ -14,7 +14,8 @@ export default function AdminUsers() {
     password: '',
     full_name: '',
     institution: '',
-    is_admin: false
+    is_admin: false,
+    is_superuser: false
   });
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
   const [loading, setLoading] = useState(false);
@@ -123,7 +124,8 @@ export default function AdminUsers() {
         password: '',
         full_name: '',
         institution: '',
-        is_admin: false
+        is_admin: false,
+        is_superuser: false
       });
 
       // 重新加载用户列表
@@ -245,18 +247,34 @@ export default function AdminUsers() {
               />
             </div>
 
-            <div className="flex items-center">
-              <input
-                type="checkbox"
-                name="is_admin"
-                id="is_admin"
-                checked={formData.is_admin}
-                onChange={handleChange}
-                className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
-              />
-              <label htmlFor="is_admin" className="ml-2 block text-sm text-gray-700">
-                设为管理员 (可上传和下载数据集)
-              </label>
+            <div className="space-y-3">
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  name="is_admin"
+                  id="is_admin"
+                  checked={formData.is_admin}
+                  onChange={handleChange}
+                  className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+                />
+                <label htmlFor="is_admin" className="ml-2 block text-sm text-gray-700">
+                  设为管理员 (可上传和下载数据集)
+                </label>
+              </div>
+              
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  name="is_superuser"
+                  id="is_superuser"
+                  checked={formData.is_superuser}
+                  onChange={handleChange}
+                  className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
+                />
+                <label htmlFor="is_superuser" className="ml-2 block text-sm text-gray-700">
+                  设为超级管理员 (拥有用户管理权限)
+                </label>
+              </div>
             </div>
 
             <div className="bg-blue-50 border border-blue-200 rounded-md p-4">
