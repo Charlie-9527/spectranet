@@ -111,13 +111,13 @@ export default function Home() {
             </div>
             <div>
               <div className="text-4xl font-bold text-primary-600">
-                100<sup>+</sup>
+                50<sup>+</sup>
               </div>
               <div className="text-gray-600 mt-2">贡献者</div>
             </div>
             <div>
               <div className="text-4xl font-bold text-primary-600">
-                10K<sup>+</sup>
+                3K<sup>+</sup>
               </div>
               <div className="text-gray-600 mt-2">下载量</div>
             </div>
