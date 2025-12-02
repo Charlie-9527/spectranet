@@ -36,8 +36,8 @@ async def upload_dataset(
             detail="Dataset not found"
         )
     
-    # Check ownership
-    if dataset.owner_id != current_user.id and not current_user.is_superuser:
+    # Check ownership - 只有超级用户或管理员或数据集所有者可以上传
+    if dataset.owner_id != current_user.id and not current_user.is_superuser and not current_user.is_admin:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Not enough permissions"
@@ -119,7 +119,8 @@ async def upload_samples_csv(
             detail="Dataset not found"
         )
     
-    if dataset.owner_id != current_user.id and not current_user.is_superuser:
+    # 只有超级用户或管理员或数据集所有者可以上传样本
+    if dataset.owner_id != current_user.id and not current_user.is_superuser and not current_user.is_admin:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Not enough permissions"
@@ -223,7 +224,8 @@ async def upload_labeled_file(
             detail="Dataset not found"
         )
     
-    if dataset.owner_id != current_user.id and not current_user.is_superuser:
+    # 只有超级用户或管理员或数据集所有者可以上传
+    if dataset.owner_id != current_user.id and not current_user.is_superuser and not current_user.is_admin:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Not enough permissions"

@@ -50,6 +50,7 @@ def init_db():
                 hashed_password=get_password_hash("admin123"),
                 full_name="System Administrator",
                 is_superuser=True,
+                is_admin=True,
                 is_active=True
             )
             db.add(admin)

@@ -15,7 +15,7 @@ interface FileWithLabel {
 }
 
 export default function Upload() {
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated, user } = useAuthStore();
   const navigate = useNavigate();
   const [categories, setCategories] = useState<Category[]>([]);
   const [step, setStep] = useState(1);
@@ -45,8 +45,13 @@ export default function Upload() {
       navigate('/login');
       return;
     }
+    // 检查是否是管理员或超级用户
+    if (!user?.is_admin && !user?.is_superuser) {
+      navigate('/datasets');
+      return;
+    }
     loadCategories();
-  }, [isAuthenticated]);
+  }, [isAuthenticated, user]);
 
   const loadCategories = async () => {
     const cats = await categoryApi.getCategories();

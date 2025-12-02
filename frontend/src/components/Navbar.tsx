@@ -35,7 +35,7 @@ export default function Navbar() {
                 <BarChart3 className="h-4 w-4" />
                 <span>统计</span>
               </Link>
-              {isAuthenticated && (
+              {isAuthenticated && (user?.is_admin || user?.is_superuser) && (
                 <Link
                   to="/upload"
                   className="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium flex items-center space-x-1"
