@@ -6,7 +6,6 @@ import { uploadApi } from '../api/upload';
 import { categoryApi } from '../api/categories';
 import { Upload as UploadIcon, FileText, CheckCircle } from 'lucide-react';
 import MultiFileUpload from '../components/MultiFileUpload';
-import type { Category } from '../types';
 
 interface CategoryNode {
   id: number;
@@ -25,7 +24,6 @@ interface FileWithLabel {
 export default function Upload() {
   const { isAuthenticated, user } = useAuthStore();
   const navigate = useNavigate();
-  const [categories, setCategories] = useState<Category[]>([]);
   const [categoryTree, setCategoryTree] = useState<CategoryNode[]>([]);
   const [step, setStep] = useState(1);
   const [datasetId, setDatasetId] = useState<number | null>(null);
@@ -69,9 +67,6 @@ export default function Upload() {
   }, [isAuthenticated, user]);
 
   const loadCategories = async () => {
-    const cats = await categoryApi.getCategories();
-    setCategories(cats);
-    
     // 获取层级结构
     const tree = await categoryApi.getCategoryTree();
     setCategoryTree(tree);
