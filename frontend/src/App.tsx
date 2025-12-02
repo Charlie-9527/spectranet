@@ -11,6 +11,7 @@ import DatasetDetail from './pages/DatasetDetail';
 import Upload from './pages/Upload';
 import Statistics from './pages/Statistics';
 import AdminUsers from './pages/AdminUsers';
+import CategoryManagement from './pages/CategoryManagement';
 
 function App() {
   const { loadUser } = useAuthStore();
@@ -33,6 +34,7 @@ function App() {
             <Route path="/upload" element={<Upload />} />
             <Route path="/statistics" element={<Statistics />} />
             <Route path="/admin/users" element={<AdminUsers />} />
+            <Route path="/admin/categories" element={<CategoryManagement />} />
           </Routes>
         </main>
         <Footer />

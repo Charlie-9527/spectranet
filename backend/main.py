@@ -22,24 +22,6 @@ def auto_init_db():
         if not admin_exists:
             print("Initializing database with default data...")
             
-            # Create default categories
-            categories = [
-                {"name": "农业", "description": "Agricultural spectral data"},
-                {"name": "植被", "description": "Plant and vegetation spectra"},
-                {"name": "矿物", "description": "Mineral and geological spectra"},
-                {"name": "水质", "description": "Water and aquatic spectral data"},
-                {"name": "遥感", "description": "Satellite and aerial spectral data"},
-                {"name": "医学", "description": "Biomedical spectral data"},
-                {"name": "材料", "description": "Material characterization spectra"},
-                {"name": "大气", "description": "Atmospheric spectral measurements"},
-            ]
-            
-            for cat_data in categories:
-                existing = db.query(Category).filter(Category.name == cat_data["name"]).first()
-                if not existing:
-                    category = Category(**cat_data)
-                    db.add(category)
-            
             # Create default admin user
             admin = User(
                 username="admin",
@@ -52,9 +34,73 @@ def auto_init_db():
             )
             db.add(admin)
             db.commit()
-            print("Database initialized successfully with admin user and categories!")
+            print("Database initialized successfully with admin user!")
         else:
             print("Database already initialized.")
+        
+        # Check if categories exist
+        category_count = db.query(Category).count()
+        if category_count == 0:
+            print("Initializing hierarchical categories...")
+            
+            # 创建三大类
+            solid = Category(name="固体", description="固体物质光谱数据")
+            liquid = Category(name="液体", description="液体物质光谱数据")
+            gas = Category(name="气体", description="气体物质光谱数据")
+            
+            db.add_all([solid, liquid, gas])
+            db.flush()
+            
+            # 固体下的二级分类
+            crops = Category(name="农作物", description="农作物光谱数据", parent_id=solid.id)
+            chemical = Category(name="化工原料", description="化工原料光谱数据", parent_id=solid.id)
+            mineral = Category(name="矿物", description="矿物光谱数据", parent_id=solid.id)
+            daily_material = Category(name="日用材料", description="日用材料光谱数据", parent_id=solid.id)
+            
+            db.add_all([crops, chemical, mineral, daily_material])
+            db.flush()
+            
+            # 液体下的二级分类
+            glycol = Category(name="丙二醇", description="丙二醇光谱数据", parent_id=liquid.id)
+            oils = Category(name="油脂", description="油脂光谱数据", parent_id=liquid.id)
+            
+            db.add_all([glycol, oils])
+            db.flush()
+            
+            # 气体下的二级分类
+            aerosol = Category(name="气溶胶", description="气溶胶光谱数据", parent_id=gas.id)
+            methane = Category(name="甲烷", description="甲烷光谱数据", parent_id=gas.id)
+            ammonia = Category(name="氨气", description="氨气光谱数据", parent_id=gas.id)
+            
+            db.add_all([aerosol, methane, ammonia])
+            db.flush()
+            
+            # 农作物下的三级分类
+            tobacco = Category(name="烟草", description="烟草光谱数据", parent_id=crops.id)
+            medicine = Category(name="中药", description="中药光谱数据", parent_id=crops.id)
+            beans = Category(name="豆类", description="豆类光谱数据", parent_id=crops.id)
+            
+            db.add_all([tobacco, medicine, beans])
+            db.flush()
+            
+            # 矿物下的三级分类
+            diamond = Category(name="金刚石", description="金刚石光谱数据", parent_id=mineral.id)
+            
+            db.add(diamond)
+            db.flush()
+            
+            # 日用材料下的三级分类
+            fabric = Category(name="织物", description="织物光谱数据", parent_id=daily_material.id)
+            plastic = Category(name="塑料", description="塑料光谱数据", parent_id=daily_material.id)
+            glass_cat = Category(name="玻璃", description="玻璃光谱数据", parent_id=daily_material.id)
+            
+            db.add_all([fabric, plastic, glass_cat])
+            
+            db.commit()
+            print("✅ Hierarchical categories initialized successfully!")
+        else:
+            print(f"Categories already exist ({category_count} categories found).")
+            
     except Exception as e:
         print(f"Error during auto-initialization: {e}")
         db.rollback()

@@ -26,7 +26,8 @@ export default function CategoryTree({ onSelectCategory, selectedCategoryId }: C
   const loadCategoryTree = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:8000/api/categories/tree');
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+      const response = await fetch(`${apiUrl}/api/categories/tree`);
       const data = await response.json();
       setCategoryTree(data);
     } catch (error) {

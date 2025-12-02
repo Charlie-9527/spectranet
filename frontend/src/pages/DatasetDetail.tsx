@@ -50,7 +50,8 @@ export default function DatasetDetail() {
       const token = localStorage.getItem('access_token');
       
       // 使用 fetch 下载文件，携带认证 token
-      const response = await fetch(`http://localhost:8000/api/datasets/${id}/download`, {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+      const response = await fetch(`${apiUrl}/api/datasets/${id}/download`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`

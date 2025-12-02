@@ -2,8 +2,9 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from database import get_db
-from models import Category
+from models import Category, User
 from schemas import CategoryCreate, CategoryResponse
+from auth import get_current_active_user
 
 router = APIRouter(prefix="/api/categories", tags=["categories"])
 
@@ -46,7 +47,18 @@ def get_category(category_id: int, db: Session = Depends(get_db)):
 
 
 @router.post("/", response_model=CategoryResponse, status_code=status.HTTP_201_CREATED)
-def create_category(category_data: CategoryCreate, db: Session = Depends(get_db)):
+def create_category(
+    category_data: CategoryCreate, 
+    current_user: User = Depends(get_current_active_user),
+    db: Session = Depends(get_db)
+):
+    """创建分类（仅超级管理员）"""
+    if not current_user.is_superuser:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Only superusers can create categories"
+        )
+    
     # Check if parent exists if parent_id is provided
     if category_data.parent_id:
         parent = db.query(Category).filter(Category.id == category_data.parent_id).first()
@@ -61,3 +73,74 @@ def create_category(category_data: CategoryCreate, db: Session = Depends(get_db)
     db.commit()
     db.refresh(db_category)
     return db_category
+
+
+@router.put("/{category_id}", response_model=CategoryResponse)
+def update_category(
+    category_id: int,
+    category_data: CategoryCreate,
+    current_user: User = Depends(get_current_active_user),
+    db: Session = Depends(get_db)
+):
+    """更新分类（仅超级管理员）"""
+    if not current_user.is_superuser:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Only superusers can update categories"
+        )
+    
+    category = db.query(Category).filter(Category.id == category_id).first()
+    if not category:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Category not found"
+        )
+    
+    # Check if parent exists if parent_id is provided
+    if category_data.parent_id:
+        parent = db.query(Category).filter(Category.id == category_data.parent_id).first()
+        if not parent:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Parent category not found"
+            )
+    
+    for key, value in category_data.dict().items():
+        setattr(category, key, value)
+    
+    db.commit()
+    db.refresh(category)
+    return category
+
+
+@router.delete("/{category_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_category(
+    category_id: int,
+    current_user: User = Depends(get_current_active_user),
+    db: Session = Depends(get_db)
+):
+    """删除分类（仅超级管理员）"""
+    if not current_user.is_superuser:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Only superusers can delete categories"
+        )
+    
+    category = db.query(Category).filter(Category.id == category_id).first()
+    if not category:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Category not found"
+        )
+    
+    # Check if category has children
+    children = db.query(Category).filter(Category.parent_id == category_id).first()
+    if children:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Cannot delete category with subcategories"
+        )
+    
+    db.delete(category)
+    db.commit()
+    return None

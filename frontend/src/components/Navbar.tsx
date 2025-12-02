@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
-import { LogOut, User, BarChart3, Upload } from 'lucide-react';
+import { LogOut, User, BarChart3, Upload, FolderTree } from 'lucide-react';
 
 export default function Navbar() {
   const { isAuthenticated, user, logout } = useAuthStore();
@@ -45,13 +45,22 @@ export default function Navbar() {
                 </Link>
               )}
               {isAuthenticated && user?.is_superuser && (
-                <Link
-                  to="/admin/users"
-                  className="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium flex items-center space-x-1"
-                >
-                  <User className="h-4 w-4" />
-                  <span>用户管理</span>
-                </Link>
+                <>
+                  <Link
+                    to="/admin/users"
+                    className="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium flex items-center space-x-1"
+                  >
+                    <User className="h-4 w-4" />
+                    <span>用户管理</span>
+                  </Link>
+                  <Link
+                    to="/admin/categories"
+                    className="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium flex items-center space-x-1"
+                  >
+                    <FolderTree className="h-4 w-4" />
+                    <span>分类管理</span>
+                  </Link>
+                </>
               )}
             </div>
           </div>
