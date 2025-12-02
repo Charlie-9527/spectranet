@@ -8,6 +8,14 @@ import { Upload as UploadIcon, FileText, CheckCircle } from 'lucide-react';
 import MultiFileUpload from '../components/MultiFileUpload';
 import type { Category } from '../types';
 
+interface CategoryNode {
+  id: number;
+  name: string;
+  description: string;
+  parent_id: number | null;
+  children: CategoryNode[];
+}
+
 interface FileWithLabel {
   id: string;
   file: File;
@@ -18,6 +26,7 @@ export default function Upload() {
   const { isAuthenticated, user } = useAuthStore();
   const navigate = useNavigate();
   const [categories, setCategories] = useState<Category[]>([]);
+  const [categoryTree, setCategoryTree] = useState<CategoryNode[]>([]);
   const [step, setStep] = useState(1);
   const [datasetId, setDatasetId] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -56,6 +65,34 @@ export default function Upload() {
   const loadCategories = async () => {
     const cats = await categoryApi.getCategories();
     setCategories(cats);
+    
+    // 获取层级结构
+    const tree = await categoryApi.getCategoryTree();
+    setCategoryTree(tree);
+  };
+
+  // 递归生成层级选项
+  const renderCategoryOptions = (nodes: CategoryNode[], level: number = 0): JSX.Element[] => {
+    const elements: JSX.Element[] = [];
+    
+    nodes.forEach(node => {
+      // 添加父节点（禁用，仅显示）
+      const hasChildren = node.children && node.children.length > 0;
+      const indent = '  '.repeat(level); // 使用空格缩进
+      
+      elements.push(
+        <option key={node.id} value={node.id} disabled={hasChildren}>
+          {indent}{hasChildren ? '▶ ' : ''}{node.name}
+        </option>
+      );
+      
+      // 递归添加子节点
+      if (hasChildren) {
+        elements.push(...renderCategoryOptions(node.children, level + 1));
+      }
+    });
+    
+    return elements;
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -236,12 +273,11 @@ export default function Upload() {
                     className="input-field"
                   >
                     <option value="">选择分类</option>
-                    {categories.map((cat) => (
-                      <option key={cat.id} value={cat.id}>
-                        {cat.name}
-                      </option>
-                    ))}
+                    {renderCategoryOptions(categoryTree)}
                   </select>
+                  <p className="mt-1 text-xs text-gray-500">
+                    提示：带有 ▶ 符号的是父类，请选择子类
+                  </p>
                 </div>
 
                 <div>
