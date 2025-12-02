@@ -44,6 +44,12 @@ export default function Upload() {
     is_public: true,
   });
 
+  // 级联选择器状态
+  const [selectedLevel1, setSelectedLevel1] = useState<number | null>(null);
+  const [selectedLevel2, setSelectedLevel2] = useState<number | null>(null);
+  const [level2Options, setLevel2Options] = useState<CategoryNode[]>([]);
+  const [level3Options, setLevel3Options] = useState<CategoryNode[]>([]);
+
   const [dataFile, setDataFile] = useState<File | null>(null);
   const [samplesFile, setSamplesFile] = useState<File | null>(null);
   const [multipleFiles, setMultipleFiles] = useState<FileWithLabel[]>([]);
@@ -69,6 +75,56 @@ export default function Upload() {
     // 获取层级结构
     const tree = await categoryApi.getCategoryTree();
     setCategoryTree(tree);
+  };
+
+  // 处理一级分类选择
+  const handleLevel1Change = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value ? Number(e.target.value) : null;
+    setSelectedLevel1(value);
+    setSelectedLevel2(null);
+    setFormData({ ...formData, category_id: '' });
+    
+    if (value) {
+      const selected = categoryTree.find(cat => cat.id === value);
+      if (selected && selected.children && selected.children.length > 0) {
+        setLevel2Options(selected.children);
+        setLevel3Options([]);
+      } else {
+        // 如果是叶子节点，直接设置 category_id
+        setFormData({ ...formData, category_id: value.toString() });
+        setLevel2Options([]);
+        setLevel3Options([]);
+      }
+    } else {
+      setLevel2Options([]);
+      setLevel3Options([]);
+    }
+  };
+
+  // 处理二级分类选择
+  const handleLevel2Change = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value ? Number(e.target.value) : null;
+    setSelectedLevel2(value);
+    setFormData({ ...formData, category_id: '' });
+    
+    if (value) {
+      const selected = level2Options.find(cat => cat.id === value);
+      if (selected && selected.children && selected.children.length > 0) {
+        setLevel3Options(selected.children);
+      } else {
+        // 如果是叶子节点，直接设置 category_id
+        setFormData({ ...formData, category_id: value.toString() });
+        setLevel3Options([]);
+      }
+    } else {
+      setLevel3Options([]);
+    }
+  };
+
+  // 处理三级分类选择
+  const handleLevel3Change = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value;
+    setFormData({ ...formData, category_id: value });
   };
 
   // 递归生成层级选项
@@ -266,17 +322,55 @@ export default function Upload() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     分类
                   </label>
-                  <select
-                    name="category_id"
-                    value={formData.category_id}
-                    onChange={handleChange}
-                    className="input-field"
-                  >
-                    <option value="">选择分类</option>
-                    {renderCategoryOptions(categoryTree)}
-                  </select>
+                  <div className="space-y-3">
+                    {/* 一级分类 */}
+                    <select
+                      value={selectedLevel1 || ''}
+                      onChange={handleLevel1Change}
+                      className="input-field"
+                    >
+                      <option value="">选择一级分类</option>
+                      {categoryTree.map((cat) => (
+                        <option key={cat.id} value={cat.id}>
+                          {cat.name}
+                        </option>
+                      ))}
+                    </select>
+
+                    {/* 二级分类 */}
+                    {level2Options.length > 0 && (
+                      <select
+                        value={selectedLevel2 || ''}
+                        onChange={handleLevel2Change}
+                        className="input-field"
+                      >
+                        <option value="">选择二级分类</option>
+                        {level2Options.map((cat) => (
+                          <option key={cat.id} value={cat.id}>
+                            {cat.name}
+                          </option>
+                        ))}
+                      </select>
+                    )}
+
+                    {/* 三级分类 */}
+                    {level3Options.length > 0 && (
+                      <select
+                        value={formData.category_id}
+                        onChange={handleLevel3Change}
+                        className="input-field"
+                      >
+                        <option value="">选择三级分类</option>
+                        {level3Options.map((cat) => (
+                          <option key={cat.id} value={cat.id}>
+                            {cat.name}
+                          </option>
+                        ))}
+                      </select>
+                    )}
+                  </div>
                   <p className="mt-1 text-xs text-gray-500">
-                    提示：带有 ▶ 符号的是父类，请选择子类
+                    请按顺序选择分类层级
                   </p>
                 </div>
 
