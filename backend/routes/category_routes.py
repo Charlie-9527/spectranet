@@ -52,11 +52,11 @@ def create_category(
     current_user: User = Depends(get_current_active_user),
     db: Session = Depends(get_db)
 ):
-    """创建分类（仅超级管理员）"""
-    if not current_user.is_superuser:
+    """创建分类（管理员及超级管理员）"""
+    if not current_user.is_superuser and not current_user.is_admin:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Only superusers can create categories"
+            detail="Only admins and superusers can create categories"
         )
     
     # Check if parent exists if parent_id is provided
@@ -82,11 +82,11 @@ def update_category(
     current_user: User = Depends(get_current_active_user),
     db: Session = Depends(get_db)
 ):
-    """更新分类（仅超级管理员）"""
-    if not current_user.is_superuser:
+    """更新分类（管理员及超级管理员）"""
+    if not current_user.is_superuser and not current_user.is_admin:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Only superusers can update categories"
+            detail="Only admins and superusers can update categories"
         )
     
     category = db.query(Category).filter(Category.id == category_id).first()
@@ -119,11 +119,11 @@ def delete_category(
     current_user: User = Depends(get_current_active_user),
     db: Session = Depends(get_db)
 ):
-    """删除分类（仅超级管理员）"""
-    if not current_user.is_superuser:
+    """删除分类（管理员及超级管理员）"""
+    if not current_user.is_superuser and not current_user.is_admin:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Only superusers can delete categories"
+            detail="Only admins and superusers can delete categories"
         )
     
     category = db.query(Category).filter(Category.id == category_id).first()

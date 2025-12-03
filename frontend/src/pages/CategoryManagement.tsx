@@ -37,8 +37,8 @@ export default function CategoryManagement() {
       navigate('/login');
       return;
     }
-    if (!user?.is_superuser) {
-      alert('仅超级管理员可以访问此页面');
+    if (!user?.is_superuser && !user?.is_admin) {
+      alert('仅管理员及超级管理员可以访问此页面');
       navigate('/');
       return;
     }

@@ -53,14 +53,16 @@ export default function Navbar() {
                     <User className="h-4 w-4" />
                     <span>用户管理</span>
                   </Link>
-                  <Link
-                    to="/admin/categories"
-                    className="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium flex items-center space-x-1"
-                  >
-                    <FolderTree className="h-4 w-4" />
-                    <span>分类管理</span>
-                  </Link>
                 </>
+              )}
+              {isAuthenticated && (user?.is_superuser || user?.is_admin) && (
+                <Link
+                  to="/admin/categories"
+                  className="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium flex items-center space-x-1"
+                >
+                  <FolderTree className="h-4 w-4" />
+                  <span>分类管理</span>
+                </Link>
               )}
             </div>
           </div>
