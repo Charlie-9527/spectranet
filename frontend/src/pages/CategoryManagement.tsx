@@ -112,8 +112,7 @@ export default function CategoryManagement() {
       if (selected && selected.children && selected.children.length > 0) {
         setLevel2Options(selected.children);
         setLevel3Options([]);
-        // 如果有子分类，清空 parent_id 等待用户选择
-        setFormData({ ...formData, parent_id: null });
+        // 有子分类，但保持 parent_id 为当前选择，用户可以继续选择或直接保存
       } else {
         // 如果是叶子节点，直接设置 parent_id
         setLevel2Options([]);
@@ -135,8 +134,7 @@ export default function CategoryManagement() {
       const selected = level2Options.find(cat => cat.id === value);
       if (selected && selected.children && selected.children.length > 0) {
         setLevel3Options(selected.children);
-        // 如果有子分类，清空 parent_id 等待用户选择
-        setFormData({ ...formData, parent_id: null });
+        // 有子分类，但保持 parent_id 为当前选择，用户可以继续选择或直接保存
       } else {
         // 如果是叶子节点，直接设置 parent_id
         setLevel3Options([]);
