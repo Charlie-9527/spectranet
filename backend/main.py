@@ -14,34 +14,13 @@ Base.metadata.create_all(bind=engine)
 
 # Auto-initialize database with default data on startup
 def auto_init_db():
-    """Automatically initialize database with default data if needed"""
+    """自动初始化数据库（仅初始化分类，不再自动创建 admin 用户）"""
     db = SessionLocal()
     try:
-        # Check if admin user exists
-        admin_exists = db.query(User).filter(User.username == "admin").first()
-        if not admin_exists:
-            print("Initializing database with default data...")
-            
-            # Create default admin user
-            admin = User(
-                username="admin",
-                email="admin@spectranet.com",
-                hashed_password=get_password_hash("admin123"),
-                full_name="System Administrator",
-                is_superuser=True,
-                is_admin=True,
-                is_active=True
-            )
-            db.add(admin)
-            db.commit()
-            print("Database initialized successfully with admin user!")
-        else:
-            print("Database already initialized.")
-        
-        # Check if categories exist
+        # 检查分类是否存在
         category_count = db.query(Category).count()
         if category_count == 0:
-            print("Initializing hierarchical categories...")
+            print("初始化层级分类...")
             
             # 创建三大类
             solid = Category(name="固体", description="固体物质光谱数据")
@@ -97,17 +76,17 @@ def auto_init_db():
             db.add_all([fabric, plastic, glass_cat])
             
             db.commit()
-            print("✅ Hierarchical categories initialized successfully!")
+            print("✅ 层级分类初始化成功！")
         else:
-            print(f"Categories already exist ({category_count} categories found).")
+            print(f"分类已存在（发现 {category_count} 个分类）")
             
     except Exception as e:
-        print(f"Error during auto-initialization: {e}")
+        print(f"初始化错误: {e}")
         db.rollback()
     finally:
         db.close()
 
-# Run auto-initialization
+# 运行自动初始化（仅分类）
 auto_init_db()
 
 # Create upload directory

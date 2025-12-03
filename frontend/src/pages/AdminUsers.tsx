@@ -35,7 +35,9 @@ export default function AdminUsers() {
           }
         }
       );
-      setUsers(response.data);
+      // 按 ID 升序排序
+      const sortedUsers = response.data.sort((a, b) => a.id - b.id);
+      setUsers(sortedUsers);
     } catch (error: any) {
       console.error('加载用户列表失败:', error);
     } finally {
