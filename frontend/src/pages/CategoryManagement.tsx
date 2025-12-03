@@ -25,6 +25,12 @@ export default function CategoryManagement() {
     parent_id: null as number | null
   });
   const [expandedIds, setExpandedIds] = useState<Set<number>>(new Set());
+  
+  // 级联选择器状态
+  const [selectedLevel1, setSelectedLevel1] = useState<number | null>(null);
+  const [selectedLevel2, setSelectedLevel2] = useState<number | null>(null);
+  const [level2Options, setLevel2Options] = useState<Category[]>([]);
+  const [level3Options, setLevel3Options] = useState<Category[]>([]);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -92,6 +98,58 @@ export default function CategoryManagement() {
         alert('删除失败，请重试');
       }
     }
+  };
+
+  // 处理一级分类选择
+  const handleLevel1Change = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value ? Number(e.target.value) : null;
+    setSelectedLevel1(value);
+    setSelectedLevel2(null);
+    setFormData({ ...formData, parent_id: value });
+    
+    if (value) {
+      const selected = categories.find(cat => cat.id === value);
+      if (selected && selected.children && selected.children.length > 0) {
+        setLevel2Options(selected.children);
+        setLevel3Options([]);
+        // 如果有子分类，清空 parent_id 等待用户选择
+        setFormData({ ...formData, parent_id: null });
+      } else {
+        // 如果是叶子节点，直接设置 parent_id
+        setLevel2Options([]);
+        setLevel3Options([]);
+      }
+    } else {
+      setLevel2Options([]);
+      setLevel3Options([]);
+    }
+  };
+
+  // 处理二级分类选择
+  const handleLevel2Change = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value ? Number(e.target.value) : null;
+    setSelectedLevel2(value);
+    setFormData({ ...formData, parent_id: value });
+    
+    if (value) {
+      const selected = level2Options.find(cat => cat.id === value);
+      if (selected && selected.children && selected.children.length > 0) {
+        setLevel3Options(selected.children);
+        // 如果有子分类，清空 parent_id 等待用户选择
+        setFormData({ ...formData, parent_id: null });
+      } else {
+        // 如果是叶子节点，直接设置 parent_id
+        setLevel3Options([]);
+      }
+    } else {
+      setLevel3Options([]);
+    }
+  };
+
+  // 处理三级分类选择
+  const handleLevel3Change = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value ? Number(e.target.value) : null;
+    setFormData({ ...formData, parent_id: value });
   };
 
   const toggleExpand = (id: number) => {
@@ -191,6 +249,11 @@ export default function CategoryManagement() {
               setShowForm(true);
               setEditingId(null);
               setFormData({ name: '', description: '', parent_id: null });
+              // 重置级联选择器
+              setSelectedLevel1(null);
+              setSelectedLevel2(null);
+              setLevel2Options([]);
+              setLevel3Options([]);
             }}
             className="btn-primary flex items-center space-x-2"
           >
@@ -232,23 +295,53 @@ export default function CategoryManagement() {
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   父分类
                 </label>
-                <select
-                  value={formData.parent_id || ''}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      parent_id: e.target.value ? Number(e.target.value) : null
-                    })
-                  }
-                  className="input-field"
-                >
-                  <option value="">无（顶级分类）</option>
-                  {getAllCategories(categories).map((cat) => (
-                    <option key={cat.id} value={cat.id} disabled={cat.id === editingId}>
-                      {cat.name}
-                    </option>
-                  ))}
-                </select>
+                <div className="space-y-3">
+                  {/* 一级分类 */}
+                  <select
+                    value={selectedLevel1 || ''}
+                    onChange={handleLevel1Change}
+                    className="input-field"
+                  >
+                    <option value="">无（顶级分类）</option>
+                    {categories.map((cat) => (
+                      <option key={cat.id} value={cat.id} disabled={cat.id === editingId}>
+                        {cat.name}
+                      </option>
+                    ))}
+                  </select>
+
+                  {/* 二级分类（条件渲染）*/}
+                  {level2Options.length > 0 && (
+                    <select
+                      value={selectedLevel2 || ''}
+                      onChange={handleLevel2Change}
+                      className="input-field"
+                    >
+                      <option value="">选择二级分类（或直接使用一级）</option>
+                      {level2Options.map((cat) => (
+                        <option key={cat.id} value={cat.id} disabled={cat.id === editingId}>
+                          {cat.name}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+
+                  {/* 三级分类（条件渲染）*/}
+                  {level3Options.length > 0 && (
+                    <select
+                      value={formData.parent_id || ''}
+                      onChange={handleLevel3Change}
+                      className="input-field"
+                    >
+                      <option value="">选择三级分类（或直接使用二级）</option>
+                      {level3Options.map((cat) => (
+                        <option key={cat.id} value={cat.id} disabled={cat.id === editingId}>
+                          {cat.name}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+                </div>
               </div>
               <div className="flex space-x-4">
                 <button type="submit" className="btn-primary">
@@ -260,6 +353,11 @@ export default function CategoryManagement() {
                     setShowForm(false);
                     setEditingId(null);
                     setFormData({ name: '', description: '', parent_id: null });
+                    // 重置级联选择器
+                    setSelectedLevel1(null);
+                    setSelectedLevel2(null);
+                    setLevel2Options([]);
+                    setLevel3Options([]);
                   }}
                   className="btn-secondary"
                 >
