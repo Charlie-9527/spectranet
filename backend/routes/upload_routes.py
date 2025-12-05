@@ -160,10 +160,15 @@ async def upload_samples_csv(
         # Convert wavelengths to float
         try:
             wavelengths = [float(header[i]) for i in wavelength_cols]
-        except:
+            print(f"Successfully parsed {len(wavelengths)} wavelengths")
+            print(f"First wavelength: {wavelengths[0] if wavelengths else 'None'}")
+            print(f"Last wavelength: {wavelengths[-1] if wavelengths else 'None'}")
+        except Exception as e:
+            print(f"Error parsing wavelengths: {e}")
+            print(f"Problem header value: {header}")
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Column headers (except label columns) must be numeric wavelengths"
+                detail=f"Column headers (except label columns) must be numeric wavelengths. Error: {str(e)}"
             )
         
         # Create samples
