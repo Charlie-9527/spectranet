@@ -129,7 +129,9 @@ async def upload_samples_csv(
     try:
         # Read CSV using standard library
         content = await file.read()
-        lines = content.decode('utf-8').splitlines()
+        # Remove BOM if present
+        content_str = content.decode('utf-8-sig')  # utf-8-sig automatically removes BOM
+        lines = content_str.splitlines()
         reader = csv.reader(lines)
         rows = list(reader)
         
@@ -239,7 +241,9 @@ async def upload_labeled_file(
     try:
         # Read CSV
         content = await file.read()
-        lines = content.decode('utf-8').splitlines()
+        # Remove BOM if present
+        content_str = content.decode('utf-8-sig')  # utf-8-sig automatically removes BOM
+        lines = content_str.splitlines()
         reader = csv.reader(lines)
         rows = list(reader)
         
