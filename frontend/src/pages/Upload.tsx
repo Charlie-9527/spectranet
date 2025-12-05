@@ -42,11 +42,15 @@ export default function Upload() {
     is_public: true,
   });
 
-  // 级联选择器状态
+  // 级联选择器状态（支持5级）
   const [selectedLevel1, setSelectedLevel1] = useState<number | null>(null);
   const [selectedLevel2, setSelectedLevel2] = useState<number | null>(null);
+  const [selectedLevel3, setSelectedLevel3] = useState<number | null>(null);
+  const [selectedLevel4, setSelectedLevel4] = useState<number | null>(null);
   const [level2Options, setLevel2Options] = useState<CategoryNode[]>([]);
   const [level3Options, setLevel3Options] = useState<CategoryNode[]>([]);
+  const [level4Options, setLevel4Options] = useState<CategoryNode[]>([]);
+  const [level5Options, setLevel5Options] = useState<CategoryNode[]>([]);
 
   const [dataFile, setDataFile] = useState<File | null>(null);
   const [samplesFile, setSamplesFile] = useState<File | null>(null);
@@ -77,6 +81,8 @@ export default function Upload() {
     const value = e.target.value ? Number(e.target.value) : null;
     setSelectedLevel1(value);
     setSelectedLevel2(null);
+    setSelectedLevel3(null);
+    setSelectedLevel4(null);
     setFormData({ ...formData, category_id: '' });
     
     if (value) {
@@ -84,15 +90,21 @@ export default function Upload() {
       if (selected && selected.children && selected.children.length > 0) {
         setLevel2Options(selected.children);
         setLevel3Options([]);
+        setLevel4Options([]);
+        setLevel5Options([]);
       } else {
         // 如果是叶子节点，直接设置 category_id
         setFormData({ ...formData, category_id: value.toString() });
         setLevel2Options([]);
         setLevel3Options([]);
+        setLevel4Options([]);
+        setLevel5Options([]);
       }
     } else {
       setLevel2Options([]);
       setLevel3Options([]);
+      setLevel4Options([]);
+      setLevel5Options([]);
     }
   };
 
@@ -100,24 +112,76 @@ export default function Upload() {
   const handleLevel2Change = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value ? Number(e.target.value) : null;
     setSelectedLevel2(value);
+    setSelectedLevel3(null);
+    setSelectedLevel4(null);
     setFormData({ ...formData, category_id: '' });
     
     if (value) {
       const selected = level2Options.find(cat => cat.id === value);
       if (selected && selected.children && selected.children.length > 0) {
         setLevel3Options(selected.children);
+        setLevel4Options([]);
+        setLevel5Options([]);
       } else {
         // 如果是叶子节点，直接设置 category_id
         setFormData({ ...formData, category_id: value.toString() });
         setLevel3Options([]);
+        setLevel4Options([]);
+        setLevel5Options([]);
       }
     } else {
       setLevel3Options([]);
+      setLevel4Options([]);
+      setLevel5Options([]);
     }
   };
 
   // 处理三级分类选择
   const handleLevel3Change = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value ? Number(e.target.value) : null;
+    setSelectedLevel3(value);
+    setSelectedLevel4(null);
+    setFormData({ ...formData, category_id: '' });
+    
+    if (value) {
+      const selected = level3Options.find(cat => cat.id === value);
+      if (selected && selected.children && selected.children.length > 0) {
+        setLevel4Options(selected.children);
+        setLevel5Options([]);
+      } else {
+        // 如果是叶子节点，直接设置 category_id
+        setFormData({ ...formData, category_id: value.toString() });
+        setLevel4Options([]);
+        setLevel5Options([]);
+      }
+    } else {
+      setLevel4Options([]);
+      setLevel5Options([]);
+    }
+  };
+
+  // 处理四级分类选择
+  const handleLevel4Change = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value ? Number(e.target.value) : null;
+    setSelectedLevel4(value);
+    setFormData({ ...formData, category_id: '' });
+    
+    if (value) {
+      const selected = level4Options.find(cat => cat.id === value);
+      if (selected && selected.children && selected.children.length > 0) {
+        setLevel5Options(selected.children);
+      } else {
+        // 如果是叶子节点，直接设置 category_id
+        setFormData({ ...formData, category_id: value.toString() });
+        setLevel5Options([]);
+      }
+    } else {
+      setLevel5Options([]);
+    }
+  };
+
+  // 处理五级分类选择
+  const handleLevel5Change = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value;
     setFormData({ ...formData, category_id: value });
   };
@@ -351,12 +415,44 @@ export default function Upload() {
                     {/* 三级分类 */}
                     {level3Options.length > 0 && (
                       <select
-                        value={formData.category_id}
+                        value={selectedLevel3 || ''}
                         onChange={handleLevel3Change}
                         className="input-field"
                       >
                         <option value="">选择三级分类</option>
                         {level3Options.map((cat) => (
+                          <option key={cat.id} value={cat.id}>
+                            {cat.name}
+                          </option>
+                        ))}
+                      </select>
+                    )}
+
+                    {/* 四级分类 */}
+                    {level4Options.length > 0 && (
+                      <select
+                        value={selectedLevel4 || ''}
+                        onChange={handleLevel4Change}
+                        className="input-field"
+                      >
+                        <option value="">选择四级分类</option>
+                        {level4Options.map((cat) => (
+                          <option key={cat.id} value={cat.id}>
+                            {cat.name}
+                          </option>
+                        ))}
+                      </select>
+                    )}
+
+                    {/* 五级分类 */}
+                    {level5Options.length > 0 && (
+                      <select
+                        value={formData.category_id}
+                        onChange={handleLevel5Change}
+                        className="input-field"
+                      >
+                        <option value="">选择五级分类</option>
+                        {level5Options.map((cat) => (
                           <option key={cat.id} value={cat.id}>
                             {cat.name}
                           </option>
