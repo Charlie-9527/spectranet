@@ -74,7 +74,11 @@ export default function Navbar() {
                   to="/profile"
                   className="flex items-center space-x-2 text-gray-700 hover:text-primary-600"
                 >
-                  <User className="h-5 w-5" />
+                  {user?.is_superuser ? (
+                    <img src="/crown-icon.svg" alt="Superuser" className="h-5 w-5" />
+                  ) : (
+                    <User className="h-5 w-5" />
+                  )}
                   <span className="text-sm font-medium">{user?.username}</span>
                 </Link>
                 <button
