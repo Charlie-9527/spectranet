@@ -1,46 +1,51 @@
 """
-数据库迁移脚本:添加 is_admin 字段
-运行此脚本将:
-1. 备份当前数据库
-2. 为所有现有用户添加 is_admin 字段(默认为 False)
+数据库迁移脚本
+自动修复分类唯一性约束
 """
-from database import SessionLocal, engine
-from models import Base, User
-from sqlalchemy import inspect, text
+from sqlalchemy import text
+from database import engine
 
-def migrate_db():
-    """添加 is_admin 字段到现有数据库"""
-    db = SessionLocal()
+def migrate_category_constraint():
+    """修复分类唯一性约束：从全局唯一改为组合唯一"""
     
-    try:
-        # 检查 is_admin 列是否已存在
-        inspector = inspect(engine)
-        columns = [col['name'] for col in inspector.get_columns('users')]
+    print("开始数据库迁移...")
+    
+    with engine.connect() as conn:
+        # 开启事务
+        trans = conn.begin()
         
-        if 'is_admin' not in columns:
-            print("正在添加 is_admin 字段...")
+        try:
+            # 1. 删除旧的全局唯一性约束
+            print("正在删除旧的唯一性约束...")
+            conn.execute(text("""
+                ALTER TABLE categories 
+                DROP CONSTRAINT IF EXISTS categories_name_key;
+            """))
             
-            # SQLite 添加列
-            with engine.connect() as conn:
-                conn.execute(text("ALTER TABLE users ADD COLUMN is_admin BOOLEAN DEFAULT 0"))
-                conn.commit()
+            # 2. 添加新的组合唯一性约束
+            print("正在添加新的组合唯一性约束...")
+            conn.execute(text("""
+                ALTER TABLE categories 
+                ADD CONSTRAINT uq_category_name_parent 
+                UNIQUE (name, parent_id);
+            """))
             
-            print("✅ is_admin 字段添加成功!")
-        else:
-            print("✅ is_admin 字段已存在,无需迁移。")
-        
-    except Exception as e:
-        print(f"❌ 迁移失败: {str(e)}")
-        db.rollback()
-    finally:
-        db.close()
-
+            # 提交事务
+            trans.commit()
+            print("✅ 数据库迁移成功！")
+            return True
+            
+        except Exception as e:
+            # 回滚事务
+            trans.rollback()
+            print(f"❌ 迁移失败: {e}")
+            
+            # 检查约束是否已存在
+            if "already exists" in str(e):
+                print("ℹ️  新约束已存在，无需迁移")
+                return True
+            
+            return False
 
 if __name__ == "__main__":
-    print("=" * 60)
-    print("数据库迁移: 添加 is_admin 字段")
-    print("=" * 60)
-    migrate_db()
-    print("=" * 60)
-    print("迁移完成!")
-    print("=" * 60)
+    migrate_category_constraint()
