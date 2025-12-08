@@ -42,15 +42,19 @@ export default function Upload() {
     is_public: true,
   });
 
-  // 级联选择器状态（支持5级）
+  // 级联选择器状态（支持7级）
   const [selectedLevel1, setSelectedLevel1] = useState<number | null>(null);
   const [selectedLevel2, setSelectedLevel2] = useState<number | null>(null);
   const [selectedLevel3, setSelectedLevel3] = useState<number | null>(null);
   const [selectedLevel4, setSelectedLevel4] = useState<number | null>(null);
+  const [selectedLevel5, setSelectedLevel5] = useState<number | null>(null);
+  const [selectedLevel6, setSelectedLevel6] = useState<number | null>(null);
   const [level2Options, setLevel2Options] = useState<CategoryNode[]>([]);
   const [level3Options, setLevel3Options] = useState<CategoryNode[]>([]);
   const [level4Options, setLevel4Options] = useState<CategoryNode[]>([]);
   const [level5Options, setLevel5Options] = useState<CategoryNode[]>([]);
+  const [level6Options, setLevel6Options] = useState<CategoryNode[]>([]);
+  const [level7Options, setLevel7Options] = useState<CategoryNode[]>([]);
 
   const [dataFile, setDataFile] = useState<File | null>(null);
   const [samplesFile, setSamplesFile] = useState<File | null>(null);
@@ -83,6 +87,8 @@ export default function Upload() {
     setSelectedLevel2(null);
     setSelectedLevel3(null);
     setSelectedLevel4(null);
+    setSelectedLevel5(null);
+    setSelectedLevel6(null);
     setFormData({ ...formData, category_id: '' });
     
     if (value) {
@@ -92,19 +98,24 @@ export default function Upload() {
         setLevel3Options([]);
         setLevel4Options([]);
         setLevel5Options([]);
+        setLevel6Options([]);
+        setLevel7Options([]);
       } else {
-        // 如果是叶子节点，直接设置 category_id
         setFormData({ ...formData, category_id: value.toString() });
         setLevel2Options([]);
         setLevel3Options([]);
         setLevel4Options([]);
         setLevel5Options([]);
+        setLevel6Options([]);
+        setLevel7Options([]);
       }
     } else {
       setLevel2Options([]);
       setLevel3Options([]);
       setLevel4Options([]);
       setLevel5Options([]);
+      setLevel6Options([]);
+      setLevel7Options([]);
     }
   };
 
@@ -114,6 +125,8 @@ export default function Upload() {
     setSelectedLevel2(value);
     setSelectedLevel3(null);
     setSelectedLevel4(null);
+    setSelectedLevel5(null);
+    setSelectedLevel6(null);
     setFormData({ ...formData, category_id: '' });
     
     if (value) {
@@ -122,17 +135,22 @@ export default function Upload() {
         setLevel3Options(selected.children);
         setLevel4Options([]);
         setLevel5Options([]);
+        setLevel6Options([]);
+        setLevel7Options([]);
       } else {
-        // 如果是叶子节点，直接设置 category_id
         setFormData({ ...formData, category_id: value.toString() });
         setLevel3Options([]);
         setLevel4Options([]);
         setLevel5Options([]);
+        setLevel6Options([]);
+        setLevel7Options([]);
       }
     } else {
       setLevel3Options([]);
       setLevel4Options([]);
       setLevel5Options([]);
+      setLevel6Options([]);
+      setLevel7Options([]);
     }
   };
 
@@ -141,6 +159,8 @@ export default function Upload() {
     const value = e.target.value ? Number(e.target.value) : null;
     setSelectedLevel3(value);
     setSelectedLevel4(null);
+    setSelectedLevel5(null);
+    setSelectedLevel6(null);
     setFormData({ ...formData, category_id: '' });
     
     if (value) {
@@ -148,15 +168,20 @@ export default function Upload() {
       if (selected && selected.children && selected.children.length > 0) {
         setLevel4Options(selected.children);
         setLevel5Options([]);
+        setLevel6Options([]);
+        setLevel7Options([]);
       } else {
-        // 如果是叶子节点，直接设置 category_id
         setFormData({ ...formData, category_id: value.toString() });
         setLevel4Options([]);
         setLevel5Options([]);
+        setLevel6Options([]);
+        setLevel7Options([]);
       }
     } else {
       setLevel4Options([]);
       setLevel5Options([]);
+      setLevel6Options([]);
+      setLevel7Options([]);
     }
   };
 
@@ -164,24 +189,73 @@ export default function Upload() {
   const handleLevel4Change = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value ? Number(e.target.value) : null;
     setSelectedLevel4(value);
+    setSelectedLevel5(null);
+    setSelectedLevel6(null);
     setFormData({ ...formData, category_id: '' });
     
     if (value) {
       const selected = level4Options.find(cat => cat.id === value);
       if (selected && selected.children && selected.children.length > 0) {
         setLevel5Options(selected.children);
+        setLevel6Options([]);
+        setLevel7Options([]);
       } else {
-        // 如果是叶子节点，直接设置 category_id
         setFormData({ ...formData, category_id: value.toString() });
         setLevel5Options([]);
+        setLevel6Options([]);
+        setLevel7Options([]);
       }
     } else {
       setLevel5Options([]);
+      setLevel6Options([]);
+      setLevel7Options([]);
     }
   };
 
   // 处理五级分类选择
   const handleLevel5Change = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value ? Number(e.target.value) : null;
+    setSelectedLevel5(value);
+    setSelectedLevel6(null);
+    setFormData({ ...formData, category_id: '' });
+    
+    if (value) {
+      const selected = level5Options.find(cat => cat.id === value);
+      if (selected && selected.children && selected.children.length > 0) {
+        setLevel6Options(selected.children);
+        setLevel7Options([]);
+      } else {
+        setFormData({ ...formData, category_id: value.toString() });
+        setLevel6Options([]);
+        setLevel7Options([]);
+      }
+    } else {
+      setLevel6Options([]);
+      setLevel7Options([]);
+    }
+  };
+
+  // 处理六级分类选择
+  const handleLevel6Change = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value ? Number(e.target.value) : null;
+    setSelectedLevel6(value);
+    setFormData({ ...formData, category_id: '' });
+    
+    if (value) {
+      const selected = level6Options.find(cat => cat.id === value);
+      if (selected && selected.children && selected.children.length > 0) {
+        setLevel7Options(selected.children);
+      } else {
+        setFormData({ ...formData, category_id: value.toString() });
+        setLevel7Options([]);
+      }
+    } else {
+      setLevel7Options([]);
+    }
+  };
+
+  // 处理七级分类选择
+  const handleLevel7Change = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value;
     setFormData({ ...formData, category_id: value });
   };
@@ -447,12 +521,44 @@ export default function Upload() {
                     {/* 五级分类 */}
                     {level5Options.length > 0 && (
                       <select
-                        value={formData.category_id}
+                        value={selectedLevel5 || ''}
                         onChange={handleLevel5Change}
                         className="input-field"
                       >
                         <option value="">选择五级分类</option>
                         {level5Options.map((cat) => (
+                          <option key={cat.id} value={cat.id}>
+                            {cat.name}
+                          </option>
+                        ))}
+                      </select>
+                    )}
+
+                    {/* 六级分类 */}
+                    {level6Options.length > 0 && (
+                      <select
+                        value={selectedLevel6 || ''}
+                        onChange={handleLevel6Change}
+                        className="input-field"
+                      >
+                        <option value="">选择六级分类</option>
+                        {level6Options.map((cat) => (
+                          <option key={cat.id} value={cat.id}>
+                            {cat.name}
+                          </option>
+                        ))}
+                      </select>
+                    )}
+
+                    {/* 七级分类 */}
+                    {level7Options.length > 0 && (
+                      <select
+                        value={formData.category_id}
+                        onChange={handleLevel7Change}
+                        className="input-field"
+                      >
+                        <option value="">选择七级分类</option>
+                        {level7Options.map((cat) => (
                           <option key={cat.id} value={cat.id}>
                             {cat.name}
                           </option>

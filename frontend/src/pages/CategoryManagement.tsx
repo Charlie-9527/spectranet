@@ -26,11 +26,19 @@ export default function CategoryManagement() {
   });
   const [expandedIds, setExpandedIds] = useState<Set<number>>(new Set());
   
-  // 级联选择器状态
+  // 级联选择器状态（支持7级）
   const [selectedLevel1, setSelectedLevel1] = useState<number | null>(null);
   const [selectedLevel2, setSelectedLevel2] = useState<number | null>(null);
+  const [selectedLevel3, setSelectedLevel3] = useState<number | null>(null);
+  const [selectedLevel4, setSelectedLevel4] = useState<number | null>(null);
+  const [selectedLevel5, setSelectedLevel5] = useState<number | null>(null);
+  const [selectedLevel6, setSelectedLevel6] = useState<number | null>(null);
   const [level2Options, setLevel2Options] = useState<Category[]>([]);
   const [level3Options, setLevel3Options] = useState<Category[]>([]);
+  const [level4Options, setLevel4Options] = useState<Category[]>([]);
+  const [level5Options, setLevel5Options] = useState<Category[]>([]);
+  const [level6Options, setLevel6Options] = useState<Category[]>([]);
+  const [level7Options, setLevel7Options] = useState<Category[]>([]);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -133,6 +141,10 @@ export default function CategoryManagement() {
     const value = e.target.value ? Number(e.target.value) : null;
     setSelectedLevel1(value);
     setSelectedLevel2(null);
+    setSelectedLevel3(null);
+    setSelectedLevel4(null);
+    setSelectedLevel5(null);
+    setSelectedLevel6(null);
     setFormData({ ...formData, parent_id: value });
     
     if (value) {
@@ -140,15 +152,25 @@ export default function CategoryManagement() {
       if (selected && selected.children && selected.children.length > 0) {
         setLevel2Options(selected.children);
         setLevel3Options([]);
-        // 有子分类，但保持 parent_id 为当前选择，用户可以继续选择或直接保存
+        setLevel4Options([]);
+        setLevel5Options([]);
+        setLevel6Options([]);
+        setLevel7Options([]);
       } else {
-        // 如果是叶子节点，直接设置 parent_id
         setLevel2Options([]);
         setLevel3Options([]);
+        setLevel4Options([]);
+        setLevel5Options([]);
+        setLevel6Options([]);
+        setLevel7Options([]);
       }
     } else {
       setLevel2Options([]);
       setLevel3Options([]);
+      setLevel4Options([]);
+      setLevel5Options([]);
+      setLevel6Options([]);
+      setLevel7Options([]);
     }
   };
 
@@ -156,24 +178,134 @@ export default function CategoryManagement() {
   const handleLevel2Change = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value ? Number(e.target.value) : null;
     setSelectedLevel2(value);
+    setSelectedLevel3(null);
+    setSelectedLevel4(null);
+    setSelectedLevel5(null);
+    setSelectedLevel6(null);
     setFormData({ ...formData, parent_id: value });
     
     if (value) {
       const selected = level2Options.find(cat => cat.id === value);
       if (selected && selected.children && selected.children.length > 0) {
         setLevel3Options(selected.children);
-        // 有子分类，但保持 parent_id 为当前选择，用户可以继续选择或直接保存
+        setLevel4Options([]);
+        setLevel5Options([]);
+        setLevel6Options([]);
+        setLevel7Options([]);
       } else {
-        // 如果是叶子节点，直接设置 parent_id
         setLevel3Options([]);
+        setLevel4Options([]);
+        setLevel5Options([]);
+        setLevel6Options([]);
+        setLevel7Options([]);
       }
     } else {
       setLevel3Options([]);
+      setLevel4Options([]);
+      setLevel5Options([]);
+      setLevel6Options([]);
+      setLevel7Options([]);
     }
   };
 
   // 处理三级分类选择
   const handleLevel3Change = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value ? Number(e.target.value) : null;
+    setSelectedLevel3(value);
+    setSelectedLevel4(null);
+    setSelectedLevel5(null);
+    setSelectedLevel6(null);
+    setFormData({ ...formData, parent_id: value });
+    
+    if (value) {
+      const selected = level3Options.find(cat => cat.id === value);
+      if (selected && selected.children && selected.children.length > 0) {
+        setLevel4Options(selected.children);
+        setLevel5Options([]);
+        setLevel6Options([]);
+        setLevel7Options([]);
+      } else {
+        setLevel4Options([]);
+        setLevel5Options([]);
+        setLevel6Options([]);
+        setLevel7Options([]);
+      }
+    } else {
+      setLevel4Options([]);
+      setLevel5Options([]);
+      setLevel6Options([]);
+      setLevel7Options([]);
+    }
+  };
+
+  // 处理四级分类选择
+  const handleLevel4Change = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value ? Number(e.target.value) : null;
+    setSelectedLevel4(value);
+    setSelectedLevel5(null);
+    setSelectedLevel6(null);
+    setFormData({ ...formData, parent_id: value });
+    
+    if (value) {
+      const selected = level4Options.find(cat => cat.id === value);
+      if (selected && selected.children && selected.children.length > 0) {
+        setLevel5Options(selected.children);
+        setLevel6Options([]);
+        setLevel7Options([]);
+      } else {
+        setLevel5Options([]);
+        setLevel6Options([]);
+        setLevel7Options([]);
+      }
+    } else {
+      setLevel5Options([]);
+      setLevel6Options([]);
+      setLevel7Options([]);
+    }
+  };
+
+  // 处理五级分类选择
+  const handleLevel5Change = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value ? Number(e.target.value) : null;
+    setSelectedLevel5(value);
+    setSelectedLevel6(null);
+    setFormData({ ...formData, parent_id: value });
+    
+    if (value) {
+      const selected = level5Options.find(cat => cat.id === value);
+      if (selected && selected.children && selected.children.length > 0) {
+        setLevel6Options(selected.children);
+        setLevel7Options([]);
+      } else {
+        setLevel6Options([]);
+        setLevel7Options([]);
+      }
+    } else {
+      setLevel6Options([]);
+      setLevel7Options([]);
+    }
+  };
+
+  // 处理六级分类选择
+  const handleLevel6Change = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value ? Number(e.target.value) : null;
+    setSelectedLevel6(value);
+    setFormData({ ...formData, parent_id: value });
+    
+    if (value) {
+      const selected = level6Options.find(cat => cat.id === value);
+      if (selected && selected.children && selected.children.length > 0) {
+        setLevel7Options(selected.children);
+      } else {
+        setLevel7Options([]);
+      }
+    } else {
+      setLevel7Options([]);
+    }
+  };
+
+  // 处理七级分类选择
+  const handleLevel7Change = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value ? Number(e.target.value) : null;
     setFormData({ ...formData, parent_id: value });
   };
@@ -278,8 +410,16 @@ export default function CategoryManagement() {
               // 重置级联选择器
               setSelectedLevel1(null);
               setSelectedLevel2(null);
+              setSelectedLevel3(null);
+              setSelectedLevel4(null);
+              setSelectedLevel5(null);
+              setSelectedLevel6(null);
               setLevel2Options([]);
               setLevel3Options([]);
+              setLevel4Options([]);
+              setLevel5Options([]);
+              setLevel6Options([]);
+              setLevel7Options([]);
             }}
             className="btn-primary flex items-center space-x-2"
           >
@@ -355,12 +495,76 @@ export default function CategoryManagement() {
                   {/* 三级分类（条件渲染）*/}
                   {level3Options.length > 0 && (
                     <select
-                      value={formData.parent_id || ''}
+                      value={selectedLevel3 || ''}
                       onChange={handleLevel3Change}
                       className="input-field"
                     >
                       <option value="">选择三级分类（或直接使用二级）</option>
                       {level3Options.map((cat) => (
+                        <option key={cat.id} value={cat.id} disabled={cat.id === editingId}>
+                          {cat.name}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+
+                  {/* 四级分类（条件渲染）*/}
+                  {level4Options.length > 0 && (
+                    <select
+                      value={selectedLevel4 || ''}
+                      onChange={handleLevel4Change}
+                      className="input-field"
+                    >
+                      <option value="">选择四级分类（或直接使用三级）</option>
+                      {level4Options.map((cat) => (
+                        <option key={cat.id} value={cat.id} disabled={cat.id === editingId}>
+                          {cat.name}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+
+                  {/* 五级分类（条件渲染）*/}
+                  {level5Options.length > 0 && (
+                    <select
+                      value={selectedLevel5 || ''}
+                      onChange={handleLevel5Change}
+                      className="input-field"
+                    >
+                      <option value="">选择五级分类（或直接使用四级）</option>
+                      {level5Options.map((cat) => (
+                        <option key={cat.id} value={cat.id} disabled={cat.id === editingId}>
+                          {cat.name}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+
+                  {/* 六级分类（条件渲染）*/}
+                  {level6Options.length > 0 && (
+                    <select
+                      value={selectedLevel6 || ''}
+                      onChange={handleLevel6Change}
+                      className="input-field"
+                    >
+                      <option value="">选择六级分类（或直接使用五级）</option>
+                      {level6Options.map((cat) => (
+                        <option key={cat.id} value={cat.id} disabled={cat.id === editingId}>
+                          {cat.name}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+
+                  {/* 七级分类（条件渲染）*/}
+                  {level7Options.length > 0 && (
+                    <select
+                      value={formData.parent_id || ''}
+                      onChange={handleLevel7Change}
+                      className="input-field"
+                    >
+                      <option value="">选择七级分类（或直接使用六级）</option>
+                      {level7Options.map((cat) => (
                         <option key={cat.id} value={cat.id} disabled={cat.id === editingId}>
                           {cat.name}
                         </option>
@@ -382,8 +586,16 @@ export default function CategoryManagement() {
                     // 重置级联选择器
                     setSelectedLevel1(null);
                     setSelectedLevel2(null);
+                    setSelectedLevel3(null);
+                    setSelectedLevel4(null);
+                    setSelectedLevel5(null);
+                    setSelectedLevel6(null);
                     setLevel2Options([]);
                     setLevel3Options([]);
+                    setLevel4Options([]);
+                    setLevel5Options([]);
+                    setLevel6Options([]);
+                    setLevel7Options([]);
                   }}
                   className="btn-secondary"
                 >
