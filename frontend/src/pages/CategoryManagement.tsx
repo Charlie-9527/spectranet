@@ -58,6 +58,16 @@ export default function CategoryManagement() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // 调试日志
+    console.log('Submitting category:', formData);
+    console.log('Selected levels:', { selectedLevel1, selectedLevel2 });
+    
+    // 验证：如果没有选择任何父分类，parent_id 应该为 null
+    if (!formData.parent_id && !selectedLevel1 && !selectedLevel2) {
+      formData.parent_id = null;
+    }
+    
     try {
       if (editingId) {
         await api.put(`/api/categories/${editingId}`, formData);
@@ -67,10 +77,16 @@ export default function CategoryManagement() {
       setShowForm(false);
       setEditingId(null);
       setFormData({ name: '', description: '', parent_id: null });
+      setSelectedLevel1(null);
+      setSelectedLevel2(null);
+      setLevel2Options([]);
+      setLevel3Options([]);
       loadCategories();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to save category:', error);
-      alert('保存失败，请重试');
+      console.error('Error response:', error.response?.data);
+      const errorMsg = error.response?.data?.detail || '保存失败，请重试';
+      alert(errorMsg);
     }
   };
 
