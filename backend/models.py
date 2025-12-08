@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Text, Float, Boolean, JSON
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Text, Float, Boolean, JSON, UniqueConstraint
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from database import Base
@@ -25,10 +25,15 @@ class Category(Base):
     __tablename__ = "categories"
     
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String(100), unique=True, nullable=False)
+    name = Column(String(100), nullable=False)  # 移除 unique=True
     description = Column(Text)
     parent_id = Column(Integer, ForeignKey("categories.id"), nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
+    
+    # 添加组合唯一性约束：同一父分类下名称不能重复
+    __table_args__ = (
+        UniqueConstraint('name', 'parent_id', name='uq_category_name_parent'),
+    )
     
     parent = relationship("Category", remote_side=[id], backref="subcategories")
     datasets = relationship("Dataset", back_populates="category")

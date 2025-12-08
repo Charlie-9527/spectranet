@@ -85,7 +85,19 @@ export default function CategoryManagement() {
     } catch (error: any) {
       console.error('Failed to save category:', error);
       console.error('Error response:', error.response?.data);
-      const errorMsg = error.response?.data?.detail || '保存失败，请重试';
+      
+      let errorMsg = '保存失败，请重试';
+      
+      if (error.response?.data?.detail) {
+        const detail = error.response.data.detail;
+        // 检测重名错误
+        if (detail.includes('duplicate') || detail.includes('already exists')) {
+          errorMsg = `分类名称“${formData.name}”已存在，请使用其他名称`;
+        } else {
+          errorMsg = detail;
+        }
+      }
+      
       alert(errorMsg);
     }
   };
