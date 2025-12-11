@@ -8,7 +8,7 @@ from models import User, Category
 from routes import auth_routes, dataset_routes, category_routes, upload_routes, stats_routes
 from config import settings
 from auth import get_password_hash
-from migrate_db import migrate_category_constraint
+from migrate_db import migrate_category_constraint, add_download_baseline
 
 # Create database tables
 Base.metadata.create_all(bind=engine)
@@ -16,6 +16,7 @@ Base.metadata.create_all(bind=engine)
 # 执行数据库迁移
 print("正在检查数据库迁移...")
 migrate_category_constraint()
+add_download_baseline()
 
 # Auto-initialize database with default data on startup
 def auto_init_db():
