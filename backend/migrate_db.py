@@ -97,10 +97,8 @@ def add_download_baseline():
     
     try:
         with engine.connect() as conn:
-            trans = conn.begin()
-            
             try:
-                # 1. 检查是否已经添加过基数（通过检查是否有特殊标记）
+                # 1. 检查当前总下载量
                 print("步骤 1: 检查下载量基数是否已添加...")
                 result = conn.execute(text("""
                     SELECT SUM(download_count) as total_downloads
@@ -112,7 +110,6 @@ def add_download_baseline():
                 # 如果当前总下载量已经大于等于3496，假设已经添加过基数
                 if current_total >= 3496:
                     print("✅ 下载量基数已存在（当前总下载量 >= 3496），无需迁移")
-                    trans.commit()
                     return True
                 
                 # 2. 计算需要添加的基数
@@ -128,7 +125,6 @@ def add_download_baseline():
                 
                 if dataset_count == 0:
                     print("ℹ️  没有数据集，直接跳过")
-                    trans.commit()
                     return True
                 
                 # 4. 将基数平均分配到所有数据集（取整）
@@ -145,6 +141,8 @@ def add_download_baseline():
                         UPDATE datasets 
                         SET download_count = download_count + :downloads;
                     """), {"downloads": downloads_per_dataset})
+                    conn.commit()
+                    print(f"✅ 已对所有数据集增加 {downloads_per_dataset} 次下载")
                 
                 # 6. 将余数分配给前几个数据集
                 if remainder > 0:
@@ -157,8 +155,8 @@ def add_download_baseline():
                             LIMIT :remainder
                         );
                     """), {"remainder": remainder})
-                
-                conn.commit()
+                    conn.commit()
+                    print(f"✅ 已对前 {remainder} 个数据集额外增加 1 次下载")
                 
                 # 7. 验证结果
                 result = conn.execute(text("""
@@ -168,14 +166,12 @@ def add_download_baseline():
                 new_total = result.fetchone()[0] or 0
                 print(f"✅ 更新后总下载量: {new_total}")
                 
-                trans.commit()
                 print("\n" + "="*60)
                 print("✅ 下载量基数添加成功！")
                 print("="*60 + "\n")
                 return True
                 
             except Exception as e:
-                trans.rollback()
                 error_msg = str(e)
                 print(f"\n❌ 迁移失败: {error_msg}")
                 print(f"错误类型: {type(e).__name__}")
