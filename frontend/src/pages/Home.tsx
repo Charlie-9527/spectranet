@@ -99,7 +99,7 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
             <div>
               <div className="text-4xl font-bold text-primary-600">
-                100<sup>+</sup>
+                200<sup>+</sup>
               </div>
               <div className="text-gray-600 mt-2">样本种类</div>
             </div>
