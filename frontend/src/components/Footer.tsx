@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 export default function Footer() {
   return (
     <footer className="bg-gray-800 text-white mt-auto">
@@ -13,18 +15,18 @@ export default function Footer() {
           <div>
             <h3 className="text-lg font-semibold mb-4">快速链接</h3>
             <ul className="space-y-2 text-sm text-gray-400">
-              <li><a href="/datasets" className="hover:text-white">浏览数据集</a></li>
-              <li><a href="/statistics" className="hover:text-white">统计信息</a></li>
-              <li><a href="/upload" className="hover:text-white">上传数据</a></li>
+              <li><Link to="/datasets" className="hover:text-white">浏览数据集</Link></li>
+              <li><Link to="/statistics" className="hover:text-white">统计信息</Link></li>
+              <li><Link to="/upload" className="hover:text-white">上传数据</Link></li>
             </ul>
           </div>
           
           <div>
             <h3 className="text-lg font-semibold mb-4">资源</h3>
             <ul className="space-y-2 text-sm text-gray-400">
-              <li><a href="/api/docs" className="hover:text-white">API 文档</a></li>
-              <li><a href="#" className="hover:text-white">关于</a></li>
-              <li><a href="#" className="hover:text-white">联系我们</a></li>
+              <li><a href="/api/docs" className="hover:text-white" target="_blank" rel="noopener noreferrer">API 文档</a></li>
+              <li><Link to="/contact" className="hover:text-white">关于我们</Link></li>
+              <li><Link to="/contact" className="hover:text-white">联系我们</Link></li>
             </ul>
           </div>
         </div>
