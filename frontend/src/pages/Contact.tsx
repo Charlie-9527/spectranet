@@ -71,8 +71,8 @@ export default function Contact() {
             <h3 className="text-lg font-semibold mb-2">地址</h3>
             <p className="text-gray-600 text-sm mb-2">公司地址</p>
             <p className="text-gray-700 text-sm">
-              安徽省合肥市屯溪路193号<br />
-              合肥工业大学
+              安徽省合肥市包河区包公街道<br />
+              屯溪路193号工大智谷304室
             </p>
           </div>
 
@@ -103,7 +103,7 @@ export default function Contact() {
                   <MapPin className="h-5 w-5 text-primary-600 mr-3 mt-0.5 flex-shrink-0" />
                   <div>
                     <p className="font-medium">地址</p>
-                    <p className="text-sm text-gray-600">安徽省合肥市屯溪路193号 合肥工业大学</p>
+                    <p className="text-sm text-gray-600">安徽省合肥市包河区包公街道屯溪路193号工大智谷304室</p>
                   </div>
                 </div>
                 <div className="flex items-start">
