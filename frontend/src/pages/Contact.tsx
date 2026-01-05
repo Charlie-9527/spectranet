@@ -42,8 +42,8 @@ export default function Contact() {
             </div>
             <h3 className="text-lg font-semibold mb-2">邮箱</h3>
             <p className="text-gray-600 text-sm mb-2">联系邮箱</p>
-            <a href="mailto:contact@spectranet.cn" className="text-primary-600 hover:underline">
-              contact@spectranet.cn
+            <a href="mailto:2024180168@mail.hfut.edu.cn" className="text-primary-600 hover:underline">
+              2024180168@mail.hfut.edu.cn
             </a>
           </div>
 
@@ -124,7 +124,7 @@ export default function Contact() {
                   <Mail className="h-5 w-5 text-primary-600 mr-3 mt-0.5 flex-shrink-0" />
                   <div>
                     <p className="font-medium">技术支持邮箱</p>
-                    <p className="text-sm text-gray-600">support@spectranet.cn</p>
+                    <p className="text-sm text-gray-600">2024180168@mail.hfut.edu.cn</p>
                   </div>
                 </div>
 
