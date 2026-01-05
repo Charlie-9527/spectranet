@@ -55,7 +55,7 @@ export default function Contact() {
               </div>
             </div>
             <h3 className="text-lg font-semibold mb-2">电话</h3>
-            <p className="text-gray-600 text-sm mb-2">服务热线</p>
+            <p className="text-gray-600 text-sm mb-2">联系电话</p>
             <a href="tel:0551-62901234" className="text-primary-600 hover:underline">
               0551-62901234
             </a>
