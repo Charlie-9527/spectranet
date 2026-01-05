@@ -113,13 +113,7 @@ export default function Contact() {
                     <p className="text-sm text-gray-600">230009</p>
                   </div>
                 </div>
-                <div className="flex items-start">
-                  <Phone className="h-5 w-5 text-primary-600 mr-3 mt-0.5 flex-shrink-0" />
-                  <div>
-                    <p className="font-medium">传真</p>
-                    <p className="text-sm text-gray-600">0551-62901234</p>
-                  </div>
-                </div>
+
               </div>
             </div>
 
@@ -133,13 +127,7 @@ export default function Contact() {
                     <p className="text-sm text-gray-600">support@spectranet.cn</p>
                   </div>
                 </div>
-                <div className="flex items-start">
-                  <Phone className="h-5 w-5 text-primary-600 mr-3 mt-0.5 flex-shrink-0" />
-                  <div>
-                    <p className="font-medium">技术支持电话</p>
-                    <p className="text-sm text-gray-600">0551-62901234</p>
-                  </div>
-                </div>
+
                 <div className="flex items-start">
                   <Clock className="h-5 w-5 text-primary-600 mr-3 mt-0.5 flex-shrink-0" />
                   <div>
