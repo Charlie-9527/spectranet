@@ -105,7 +105,7 @@ export default function Home() {
             </div>
             <div>
               <div className="text-4xl font-bold text-primary-600">
-                50K<sup>+</sup>
+                60K<sup>+</sup>
               </div>
               <div className="text-gray-600 mt-2">光谱数量</div>
             </div>
