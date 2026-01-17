@@ -112,7 +112,6 @@ export default function Datasets() {
                   <option value="Multispectral">多光谱</option>
                   <option value="Infrared">红外</option>
                   <option value="Raman">拉曼</option>
-                  <option value="FTIR">傅里叶红外</option>
                 </select>
               </div>
             </div>

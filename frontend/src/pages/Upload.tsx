@@ -589,7 +589,6 @@ export default function Upload() {
                     <option value="Infrared">红外</option>
                     <option value="UV-Vis">紫外可见</option>
                     <option value="Raman">拉曼</option>
-                    <option value="FTIR">傅里叶变换红外</option>
                   </select>
                 </div>
 

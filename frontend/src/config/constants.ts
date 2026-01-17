@@ -20,7 +20,6 @@ export const SPECTRAL_TYPES = [
   'Infrared',
   'UV-Vis',
   'Raman',
-  'FTIR',
   'Other'
 ];
 
