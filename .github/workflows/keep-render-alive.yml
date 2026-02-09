@@ -1,0 +1,20 @@
+name: Keep Render Backend Alive
+on:
+  schedule:
+    - cron: '*/10 * * * *'  # 每10分钟执行一次
+  workflow_dispatch:  # 允许手动触发测试
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send keep-alive request
+        run: |
+          # 发送请求到Render后端服务
+          response=$(curl -s -o /dev/null -w "%{http_code}" https://spectranet-backend.onrender.com)
+          echo "Keep-alive request sent with status code: $response"
+          if [ "$response" -ge 200 ] && [ "$response" -lt 400 ]; then
+            echo "Service is healthy"
+          else
+            echo "Service may be down, status code: $response"
+          fi
